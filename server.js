@@ -1,9 +1,9 @@
 var http = require('http');
 var fs = require('fs');
 
-// var message = 'I am so happy to be part of the Node Girls workshop!';
-// var message1 = 'Node js is so much fun!';
-// var message2 = 'Girls rule boys drool.';
+var message = 'I am so happy to be part of the Node Girls workshop!';
+var message1 = 'Node js is so much fun!';
+var message2 = 'Girls rule boys drool.';
 
 function handler (request, response) {
 
@@ -25,17 +25,27 @@ function handler (request, response) {
   }
   else if (endpoint === '/') {
     response.writeHead(200, {"Content-Type": "text/html"});
-
     fs.readFile(__dirname + '/public/index.html', function(error, file) {
      if (error) {
        console.log(error);
        return;
+      }
+      response.end(file);
+    });
+  }
+  else {
+    var contentType = request.headers.accept.split(',')[0];
+    response.writeHead(200, {"Content-Type": contentType});
+    fs.readFile(__dirname + '/public' + endpoint, function(error, file) {
+     if (error) {
+       console.log(error);
+       return;
      }
+     response.end(file);
+   });
+  }
+}
 
-    response.end(file);
-  });
-}
-}
 
 var server = http.createServer(handler);
 
